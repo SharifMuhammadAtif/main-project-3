@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Haseeb's Student Health Survey</title>
+  <meta name="description"
+    content="Haseeb's student health survey: collect student measurements, explore group summaries, and export the dataset.">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%235b61d6'/%3E%3Crect x='3' y='8' width='2.2' height='5' fill='white'/%3E%3Crect x='6.9' y='5' width='2.2' height='8' fill='white'/%3E%3Crect x='10.8' y='3' width='2.2' height='10' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="site-header">
+      <p class="eyebrow"><span class="brand-mark" aria-hidden="true">H</span> Haseeb · Portfolio Project 3</p>
+      <h1>Student Health Survey</h1>
+      <p class="lede">A simple workspace for Haseeb's student research. Organize research groups, record student measurements, and explore BMI and group summaries—all in one place.</p>
+      <aside class="question">
+        <p class="eyebrow">The research question</p>
+        <p>How do age, height, weight, and BMI vary among the university students taking part in Haseeb's survey?</p>
+      </aside>
+    </header>
+
+    <noscript>
+      <p class="noscript">Turn on JavaScript to save survey answers into the dataset.</p>
+    </noscript>
+
+    <main>
+      <section class="card group-card" aria-labelledby="group-title">
+        <h2 id="group-title">Set up your research group</h2>
+        <p class="hint group-lead">Give your group a name and add its members. Add one name when working solo, or up to four names for a team. Each saved group keeps its own results.</p>
+        <form id="group-form" autocomplete="off" novalidate>
+          <label class="field">
+            <span>Research group name</span>
+            <input id="group-name" name="group-name" type="text" maxlength="60" placeholder="e.g. Thursday lab group">
+          </label>
+          <div class="member-grid">
+            <label class="field">
+              <span>Team member 1</span>
+              <input id="member-1" name="member-1" type="text" maxlength="40" placeholder="Name">
+            </label>
+            <label class="field">
+              <span>Team member 2</span>
+              <input id="member-2" name="member-2" type="text" maxlength="40" placeholder="Optional">
+            </label>
+            <label class="field">
+              <span>Team member 3</span>
+              <input id="member-3" name="member-3" type="text" maxlength="40" placeholder="Optional">
+            </label>
+            <label class="field">
+              <span>Team member 4</span>
+              <input id="member-4" name="member-4" type="text" maxlength="40" placeholder="Optional">
+            </label>
+          </div>
+          <p id="group-status" class="status" role="status"></p>
+          <button class="button primary fit" type="submit">Save group</button>
+        </form>
+        <h3 class="subhead">Your saved groups</h3>
+        <p id="group-empty" class="hint member-hint">No groups yet.</p>
+        <ul id="group-list" class="group-list" hidden></ul>
+      </section>
+
+      <div class="layout">
+        <section class="card" aria-labelledby="form-title">
+          <h2 id="form-title">Add a student record</h2>
+          <form id="survey-form" autocomplete="off" novalidate>
+            <label class="field">
+              <span>Group</span>
+              <select id="record-group" name="group">
+                <option value="">Add a group first</option>
+              </select>
+              <small class="error" id="record-group-error"></small>
+            </label>
+            <label class="field">
+              <span>Collected by</span>
+              <select id="recorder" name="recorder">
+                <option value="">Save the group first</option>
+              </select>
+              <small class="error" id="recorder-error"></small>
+            </label>
+
+            <fieldset id="gender-field" aria-describedby="gender-error">
+              <legend>Gender</legend>
+              <div class="choices">
+                <label class="choice">
+                  <input type="radio" name="gender" value="Male">
+                  <span>Male</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="gender" value="Female">
+                  <span>Female</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="gender" value="Prefer not to say">
+                  <span>Prefer not to say</span>
+                </label>
+              </div>
+              <small class="error" id="gender-error"></small>
+            </fieldset>
+
+            <div class="trio">
+              <label class="field">
+                <span>Age (years)</span>
+                <input id="age" name="age" type="number" inputmode="numeric" min="16" max="70" step="1"
+                  placeholder="e.g. 21">
+                <small class="error" id="age-error"></small>
+              </label>
+              <label class="field">
+                <span>Height (cm)</span>
+                <input id="height" name="height" type="number" inputmode="decimal" min="120" max="220" step="0.1"
+                  placeholder="e.g. 175">
+                <small class="error" id="height-error"></small>
+              </label>
+              <label class="field">
+                <span>Weight (kg)</span>
+                <input id="weight" name="weight" type="number" inputmode="decimal" min="30" max="200" step="0.1"
+                  placeholder="e.g. 70">
+                <small class="error" id="weight-error"></small>
+              </label>
+            </div>
+
+            <p id="bmi-preview" class="preview">BMI is calculated from height and weight when you save.</p>
+            <p id="status" class="status" role="status" aria-live="polite"></p>
+            <button class="button primary" type="submit">Add to dataset</button>
+          </form>
+          <p class="hint">Accepted ranges: age 16–70, height 120–220 cm, weight 30–200 kg.</p>
+        </section>
+
+        <section class="card" aria-labelledby="summary-title">
+          <div class="results-head">
+            <h2 id="summary-title">Study snapshot</h2>
+            <label class="field results-field">
+              <span>Results for</span>
+              <select id="results-group"></select>
+            </label>
+          </div>
+          <div class="stats">
+            <div class="stat stat-wide">
+              <span>Records</span>
+              <b id="record-count">0</b>
+            </div>
+            <div class="stat">
+              <span>Mean age (years)</span>
+              <b id="mean-age">—</b>
+            </div>
+            <div class="stat">
+              <span>Mean height (cm)</span>
+              <b id="mean-height">—</b>
+            </div>
+            <div class="stat">
+              <span>Mean weight (kg)</span>
+              <b id="mean-weight">—</b>
+            </div>
+            <div class="stat">
+              <span>Mean BMI</span>
+              <b id="mean-bmi">—</b>
+            </div>
+          </div>
+          <h3 class="subhead">Collected by</h3>
+          <p id="member-empty" class="hint member-hint">Choose a group to see how records are shared across team members.</p>
+          <ul id="member-bars" class="bars" hidden></ul>
+          <h3 class="subhead">Gender split</h3>
+          <ul class="bars">
+            <li data-gender="Male">
+              <span class="bar-label">Male</span>
+              <span class="bar-track"><span class="bar-fill"></span></span>
+              <span class="bar-count">0</span>
+            </li>
+            <li data-gender="Female">
+              <span class="bar-label">Female</span>
+              <span class="bar-track"><span class="bar-fill"></span></span>
+              <span class="bar-count">0</span>
+            </li>
+            <li data-gender="Prefer not to say">
+              <span class="bar-label">Prefer not to say</span>
+              <span class="bar-track"><span class="bar-fill"></span></span>
+              <span class="bar-count">0</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="card dataset" aria-labelledby="dataset-title">
+        <div class="table-toolbar">
+          <h2 id="dataset-title">Dataset <span id="dataset-count" class="count">0 records</span></h2>
+          <div class="toolbar-actions">
+            <button id="import-button" class="button secondary" type="button">Import CSV</button>
+            <input id="import-file" type="file" accept=".csv,text/csv" hidden>
+            <button id="export-button" class="button secondary" type="button" disabled>Export CSV</button>
+            <button id="clear-button" class="button secondary" type="button" disabled>Clear dataset</button>
+          </div>
+        </div>
+        <p id="empty-state" class="empty">No records yet. Choose a group and add the first student above.</p>
+        <div class="table-scroll">
+          <table id="records-table" hidden>
+            <caption class="sr-only">Saved survey records</caption>
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Group</th>
+                <th scope="col">Recorded by</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Age</th>
+                <th scope="col">Height</th>
+                <th scope="col">Weight</th>
+                <th scope="col">BMI</th>
+                <th scope="col">Recorded</th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="records-body"></tbody>
+          </table>
+        </div>
+        <p class="footnote">The snapshot and table show the selected group. Export downloads that group's records; import adds rows from a CSV file. BMI is calculated as weight in kilograms divided by height in metres squared. Adult BMI categories are general screening ranges, not a medical diagnosis.</p>
+      </section>
+    </main>
+    <footer class="page-footer">Haseeb · Student Health Survey <span>Records are saved in this browser.</span></footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
